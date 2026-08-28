@@ -16,6 +16,10 @@ export const deleteUserGamesAPI = async(id)=>{
     return await axiosService("DELETE",`/games?userId=${id}`,{})
 }
 
+export const deleteGameAPI = async(id)=>{
+    return await axiosService("DELETE",`/games?gameId=${id}`,{})
+}
+
 export const deleteUserMemoriesAPI = async(id)=>{
     return await axiosService("DELETE",`/memories?userId=${id}`,{})
 }
@@ -25,4 +29,8 @@ export const getAllGamesAPI = async()=>{
 }
 export const getAllMemoriesAPI = async()=>{
     return await axiosService("GET",`/memories`,{})
+}
+
+export const saveGameAPI = async (gameDetails)=>{
+    return await axiosService("POST","/games",gameDetails)
 }

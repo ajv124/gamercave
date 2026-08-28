@@ -12,6 +12,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Memories from './pages/Memories'
 import Pnf from './pages/Pnf'
 import PublicRoute from './components/PublicRoute'
+import AddGame from './pages/AddGame'
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
           <Route path='/wishlist' element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
           <Route path='/library' element={<ProtectedRoute><Library /></ProtectedRoute>} />
           <Route path='/memories/:gameid' element={<ProtectedRoute><Memories /></ProtectedRoute>} />
+          <Route path='/add-game' element={<ProtectedRoute><AddGame /></ProtectedRoute>} />
           <Route path='/login' element={<PublicRoute><Login /></PublicRoute>} />
           <Route path='/register' element={<PublicRoute><Register /></PublicRoute>} />
           <Route path='/*' element={<Pnf/>} />

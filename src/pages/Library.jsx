@@ -3,10 +3,12 @@ import SearchBar from '../components/SearchBar'
 import LibraryCard from '../components/LibraryCard'
 import { getAllGamesAPI } from '../services/apiService'
 import { useState } from 'react'
+import { useAuth } from '../components/AuthProt'
 
 function Library() {
 
   const [libraryGames,setLibraryGames]=useState([])
+  const {user}=useAuth()
 
   useEffect(()=>{
     getAllLibraryGames()
@@ -15,7 +17,7 @@ function Library() {
   const getAllLibraryGames=async()=>{
     const response=await getAllGamesAPI()
     if(response.status==200){
-      setLibraryGames(response.data.filter(item=>item.status!='wishlist'))
+      setLibraryGames(response.data.filter(item=>item.status!='Wishlist'&&item.userId==user.id))
     }
   }
 

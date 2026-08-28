@@ -121,8 +121,11 @@ function Navbar() {
                             <MenuItem component="a" href='/wishlist' sx={{ color: 'white', backgroundColor: '#802D1A', mb: 1, '&:hover': { backgroundColor: '#552214' } }} onClick={handleCloseNavMenu}>
                                 <Typography sx={{ fontFamily: 'Audiowide', textAlign: 'center' }}>Wishlist</Typography>
                             </MenuItem>
-                            <MenuItem component="a" href='/library' sx={{ color: 'white', backgroundColor: '#802D1A', '&:hover': { backgroundColor: '#552214' } }} onClick={handleCloseNavMenu}>
+                            <MenuItem component="a" href='/library' sx={{ color: 'white', backgroundColor: '#802D1A', mb:1, '&:hover': { backgroundColor: '#552214' } }} onClick={handleCloseNavMenu}>
                                 <Typography sx={{ fontFamily: 'Audiowide', textAlign: 'center' }}>Library</Typography>
+                            </MenuItem>
+                            <MenuItem component="a" href='/add-game' sx={{ color: 'white', backgroundColor: '#802D1A', '&:hover': { backgroundColor: '#552214' } }} onClick={handleCloseNavMenu}>
+                                <Typography sx={{ fontFamily: 'Audiowide', textAlign: 'center' }}>Add Game</Typography>
                             </MenuItem>
                         </Menu>
                     </Box>
@@ -174,6 +177,14 @@ function Navbar() {
                             sx={{ fontFamily: 'Audiowide', mx: 4, my: 2, color: 'white', display: 'block', '&:hover': { backgroundColor: '#552214' } }}
                         >
                             Library
+                        </Button>
+                        <Button
+                            component="a"
+                            href='/add-game'
+                            onClick={handleCloseNavMenu}
+                            sx={{ fontFamily: 'Audiowide', mx: 4, my: 2, color: 'white', display: 'block', '&:hover': { backgroundColor: '#552214' } }}
+                        >
+                            Add Game
                         </Button>
                     </Box>
                     <h6 className='me-2'>{user?.username}</h6>

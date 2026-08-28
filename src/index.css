@@ -4,3 +4,7 @@
   box-sizing: border-box;
   font-family: "Audiowide", sans-serif;
 }
+
+body{
+  background-color: #565656;
+}
