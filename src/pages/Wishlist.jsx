@@ -6,27 +6,28 @@ import { useAuth } from '../components/AuthProt'
 
 function Wishlist() {
 
-  const [wishlistGames,setWishlistGames]=useState([])
-  const {user}=useAuth()
+  const [wishlistGames, setWishlistGames] = useState([])
+  const [filteredGames, setFilteredGames] = useState([])
+  const { user } = useAuth()
 
-  useEffect(()=>{
-      getAllWishlistGames()
-  },[])
+  useEffect(() => {
+    getAllWishlistGames()
+  }, [])
 
-  const getAllWishlistGames=async()=>{
-    const response=await getAllGamesAPI()
-      if(response.status==200){
-        setWishlistGames(response.data.filter(item=>item.status=='Wishlist'&&item.userId==user.id))
-      }
+  const getAllWishlistGames = async () => {
+    const response = await getAllGamesAPI()
+    if (response.status == 200) {
+      setWishlistGames(response.data.filter(item => item.status == 'Wishlist' && item.userId == user?.id))
+      setFilteredGames(response.data.filter(item => item.status == 'Wishlist' && item.userId == user?.id))
+    }
   }
-
   return (
     <>
       <div className="d-flex justify-content-center align-items-center mt-5">
-        <SearchBar games={wishlistGames}/>
+        <SearchBar games={wishlistGames} setFilteredGames={setFilteredGames} />
       </div>
       <div className="d-flex justify-content-center align-items-center mt-5">
-        <WishlistCard wishlistGames={wishlistGames}/>
+        <WishlistCard wishlistGames={filteredGames} getAllWishlistGames={getAllWishlistGames} />
       </div>
     </>
   )

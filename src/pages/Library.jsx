@@ -8,6 +8,7 @@ import { useAuth } from '../components/AuthProt'
 function Library() {
 
   const [libraryGames,setLibraryGames]=useState([])
+  const [search,setSearch]=useState('')
   const {user}=useAuth()
 
   useEffect(()=>{
@@ -21,13 +22,15 @@ function Library() {
     }
   }
 
+  const filteredGames = libraryGames.filter((item) =>item.gameTitle?.toLowerCase().includes(search.toLowerCase()))
+
   return (
     <>
       <div className="d-flex justify-content-center align-items-center mt-5">
-        <SearchBar games={libraryGames}/>
+        <SearchBar search={search} setSearch={setSearch}/>
       </div>
       <div className="d-flex justify-content-center align-items-center mt-5">
-        <LibraryCard libraryGames={libraryGames}/>
+        <LibraryCard libraryGames={filteredGames} getAllLibraryGames={getAllLibraryGames}/>
       </div>
     </>
   )

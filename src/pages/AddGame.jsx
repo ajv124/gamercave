@@ -11,7 +11,7 @@ function AddGame() {
     const [search,setSearch]=useState('')
 
     const fetchGameData=async()=>{
-        const response=await fetch(`https://api.rawg.io/api/games?key=c5b2ec0b19834a32afd86225242cd1b4&search=${encodeURIComponent(search)}`)
+        const response=await fetch(`https://api.rawg.io/api/games?key=c5b2ec0b19834a32afd86225242cd1b4&search=${search}`)
         const data=await response.json()
         setGames(data.results)
     }
@@ -19,7 +19,7 @@ function AddGame() {
     const handleAddGame=async (gameId)=>{
         const gameResponse=await fetch(`https://api.rawg.io/api/games/${gameId}?key=c5b2ec0b19834a32afd86225242cd1b4`)
         const gameData=await gameResponse.json()
-        const gameDetails={"userId":user.id,"gameId":gameData.id,"gameTitle":gameData.name,"gameImage":gameData.background_image,"rating":gameData.rating,"genres":gameData.genres.map(item=>item.name),"status":"Wishlist","url":gameData.stores.find(item=>item.store.name=="Steam").url||"https://store.steampowered.com/"}
+        const gameDetails={"userId":user.id,"gameId":gameData.id,"gameTitle":gameData.name,"gameImage":gameData.background_image,"rating":gameData.rating,"genres":gameData.genres.map(item=>item.name),"status":"Wishlist","url":gameData.stores?.some(item=>item.store?.name=="Steam")?gameData.stores.find(item=>item.store.name=="Steam").url:"https://store.steampowered.com/"}
         const response=await saveGameAPI(gameDetails)
         if(response.status==201){
             toast.success("Game Added to Wishlist!")
@@ -38,7 +38,7 @@ function AddGame() {
         <div className='row g-4'>
           {
             games.map(item => (
-              <div key={item.id} className=' d-flex justify-content-center align-items-center col 12 col-md-4 col-lg-3'>
+              <div key={item.id} className=' d-flex justify-content-center align-items-center col-12 col-md-4 col-lg-3'>
                 <div className="card" style={{width: "18rem"}}>
                   <img src={item.background_image} className="card-img-top" alt={item.name}/>
                     <div className="card-body">

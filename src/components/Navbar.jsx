@@ -14,7 +14,7 @@ import { MdMenu } from "react-icons/md";
 import { useAuth } from './AuthProt';
 import { FaUser } from "react-icons/fa";
 import { useLocation } from 'react-router-dom'
-import { deleteUserAPI, deleteUserGamesAPI, getAllGamesAPI , deleteUserMemoriesAPI, getAllMemoriesAPI} from '../services/apiService';
+import { deleteUserAPI, deleteGameAPI, getUserGamesAPI , deleteMemoryAPI, getUserMemoriesAPI} from '../services/apiService';
 import { toast } from 'react-toastify'
 
 
@@ -41,16 +41,31 @@ function Navbar() {
     const { user, logout } = useAuth()
 
     const handleDeleteUser = async (userId) => {
-        if (confirm("Are you sure you want to delete this user and all of its games")) {
-            await deleteUserAPI(userId)
-            const gamesResponse=await getAllGamesAPI()
-            if (gamesResponse.data.filter(item => item.userId == userId).length > 0) {
-                await deleteUserGamesAPI(userId);
-            }
-            const memResponse=await getAllMemoriesAPI()
-            if (memResponse.data.filter(item => item.userId == userId).length > 0) {
-                await deleteUserMemoriesAPI(userId);
-            }
+        if (!confirm("Are you sure you want to delete this user and all of its games")) {
+            return
+        }
+        // const gamesResponse=await getUserGamesAPI(userId)
+        // console.log(gamesResponse)
+        // if (gamesResponse.data.length > 0) {
+        //     const userGames=gamesResponse.data.filter(
+        //         game=>String(game.userId)==String(userId)
+        //     )
+        //     console.log(userGames)
+    //         for(const game of userGames){
+    //             await deleteGameAPI(game.id)
+    //         }   
+        // }
+    //     const memResponse=await getUserMemoriesAPI(userId)
+    //     if (memResponse.data.length > 0) {
+    //         const userMemories=memResponse.data.filter(
+    //             mem=>String(mem.userId)==String(userId)
+    //         )
+    //         for(const memory of userMemories){
+    //             await deleteMemoryAPI(memory.id);
+    //         }
+    //     }
+        const userResponse=await deleteUserAPI(userId)
+        if(userResponse.status==200){    
             logout()
             toast.info("User has been deleted successfully!")
         }
