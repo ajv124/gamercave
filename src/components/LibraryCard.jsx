@@ -1,51 +1,117 @@
 import React from 'react'
-import {toast} from 'react-toastify'
+import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { changeStatusAPI, deleteGameAPI, getGameAPI } from '../services/apiService'
 
-function LibraryCard({ libraryGames,getAllLibraryGames }) {
-
-  const handleDeleteGame=async(id)=>{
-    if(confirm("Are you sure you want to delete this game?")){
-      const response=await deleteGameAPI(id)
-      if(response.status==200){
-        toast.info("Game Deleted Successfully!")
-        getAllLibraryGames()
+function LibraryCard({ games, getAllLibraryGames }) {
+  const handleDeleteGame = async (id) => {
+    if (window.confirm('Are you sure you want to delete this game?')) {
+      try {
+        const response = await deleteGameAPI(id)
+        if (response.status === 200 || response.status === 204) {
+          toast.info('Game Deleted Successfully!')
+          getAllLibraryGames()
+        }
+      } catch (err) {
+        toast.error('Failed to delete game!')
       }
     }
   }
 
-  const changeStatus=async(id)=>{
-    const gameResponse=await getGameAPI(id)
-    if(gameResponse.status==200){
-      const gameDetails={...gameResponse.data, status:(gameResponse.data.status=="Library"?"Completed":"Library")}
-      const statusResponse=await changeStatusAPI(id,gameDetails)
-      if(statusResponse.status==200){
-        toast.info("Status Changed Successfully!")
-        getAllLibraryGames()
+  const changeStatus = async (id) => {
+    try {
+      const gameResponse = await getGameAPI(id)
+      if (gameResponse.status === 200) {
+        const currentStatus = gameResponse.data.status
+        const newStatus = currentStatus === 'Completed' ? 'Library' : 'Completed'
+        const gameDetails = { ...gameResponse.data, status: newStatus }
+        
+        const statusResponse = await changeStatusAPI(id, gameDetails)
+        if (statusResponse.status === 200) {
+          toast.info(`Status updated to ${newStatus}!`)
+          getAllLibraryGames()
+        }
       }
+    } catch (err) {
+      toast.error('Failed to update status!')
     }
+  }
+
+  if (!games || games.length === 0) {
+    return (
+      <div className="text-center text-muted py-3">
+        <p className="mb-0">No games found in this section.</p>
+      </div>
+    )
   }
 
   return (
-    <div className='row g-4'>
-      {
-        libraryGames.map(item => (
-          <div key={item.id} className='d-flex justify-content-center align-items-center col-12 col-md-4 col-lg-3'>
-            <div className="card" style={{width: "18rem"}}>
-              <img src={item.gameImage} className="card-img-top" alt={item.gameTitle}/>
-                <div className="card-body">
-                  <h5 className="card-title">{item.gameTitle}</h5>
-                  <p className="card-text">Rating : {item.rating}</p>
-                  <p className="card-text">Genres : {item.genres?.join(", ")}</p>
-                  <p className="card-text">Status : {item.status}</p>
-                  <a href={item.url} style={{ color: 'white', backgroundColor: '#802D1A', '&:hover': { backgroundColor: '#552214' } }} className="btn">Open Steam</a>
-                  <button style={{ color: 'white', backgroundColor: '#802D1A', '&:hover': { backgroundColor: '#552214' } }} className="btn my-2" onClick={()=>handleDeleteGame(item.id)}>Delete Game</button>
-                  <button style={{ color: 'white', backgroundColor: '#802D1A', '&:hover': { backgroundColor: '#552214' } }} className="btn" onClick={()=>changeStatus(item.id)}>Change Status</button>
-                </div>
+    <div className="row g-4 w-100 justify-content-center">
+      {games.map((item) => (
+        <div
+          key={item.id}
+          className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch"
+        >
+          <div className="card w-100 bg-dark text-white border-secondary h-100">
+            <img
+              src={item.gameImage || '/placeholder.png'}
+              className="card-img-top"
+              alt={item.gameTitle}
+              style={{ height: '180px', objectFit: 'cover' }}
+            />
+            <div className="card-body d-flex flex-column justify-content-between">
+              <div>
+                <h5 className="card-title text-truncate">{item.gameTitle}</h5>
+                <p className="card-text mb-1">Rating: {item.rating || 'N/A'}</p>
+                <p className="card-text small text-muted mb-1">
+                  Genres: {item.genres?.join(', ') || 'N/A'}
+                </p>
+                <span
+                  className={`badge mb-3 ${
+                    item.status === 'Completed' ? 'bg-success' : 'bg-primary'
+                  }`}
+                >
+                  {item.status}
+                </span>
+              </div>
+
+              <div className="d-flex flex-column gap-2 mt-2">
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn text-white w-100"
+                  style={{ backgroundColor: '#802D1A' }}
+                >
+                  Open Steam
+                </a>
+                
+                <Link
+                  to={`/memories/${item.id}`}
+                  className="btn btn-outline-info w-100"
+                >
+                  View Memories
+                </Link>
+
+                <button
+                  className="btn text-white w-100"
+                  style={{ backgroundColor: '#802D1A' }}
+                  onClick={() => changeStatus(item.id)}
+                >
+                  {item.status === 'Completed' ? 'Mark as In-Progress' : 'Mark as Completed'}
+                </button>
+
+                <button
+                  className="btn btn-outline-danger w-100"
+                  onClick={() => handleDeleteGame(item.id)}
+                >
+                  Delete Game
+                </button>
+              </div>
             </div>
-            </div> 
-        ))
-      }
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

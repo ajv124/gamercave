@@ -1,35 +1,42 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import SearchBar from '../components/SearchBar'
 import WishlistCard from '../components/WishlistCard'
-import { getAllGamesAPI } from '../services/apiService'
+import { getUserGamesAPI } from '../services/apiService'
 import { useAuth } from '../components/AuthProt'
 
 function Wishlist() {
-
   const [wishlistGames, setWishlistGames] = useState([])
   const [filteredGames, setFilteredGames] = useState([])
   const { user } = useAuth()
 
+  const getAllWishlistGames = useCallback(async () => {
+    if (!user?.id) return
+    try {
+      const response = await getUserGamesAPI(user.id)
+      if (response.status === 200) {
+        const userWishlist = response.data.filter(
+          (item) => item.status === 'Wishlist'
+        )
+        setWishlistGames(userWishlist)
+        setFilteredGames(userWishlist)
+      }
+    } catch (err) {
+      console.error('Failed to fetch wishlist games:', err)
+    }
+  }, [user?.id])
+
   useEffect(() => {
     getAllWishlistGames()
-  }, [])
+  }, [getAllWishlistGames])
 
-  const getAllWishlistGames = async () => {
-    const response = await getAllGamesAPI()
-    if (response.status == 200) {
-      setWishlistGames(response.data.filter(item => item.status == 'Wishlist' && item.userId == user?.id))
-      setFilteredGames(response.data.filter(item => item.status == 'Wishlist' && item.userId == user?.id))
-    }
-  }
   return (
-    <>
-      <div className="d-flex justify-content-center align-items-center mt-5">
-        <SearchBar games={wishlistGames} setFilteredGames={setFilteredGames} />
-      </div>
-      <div className="d-flex justify-content-center align-items-center mt-5">
-        <WishlistCard wishlistGames={filteredGames} getAllWishlistGames={getAllWishlistGames} />
-      </div>
-    </>
+    <div className="container py-3">
+      <SearchBar games={wishlistGames} setFilteredGames={setFilteredGames} />
+      <WishlistCard
+        wishlistGames={filteredGames}
+        getAllWishlistGames={getAllWishlistGames}
+      />
+    </div>
   )
 }
 
