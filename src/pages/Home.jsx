@@ -14,7 +14,6 @@ function Home() {
   })
   const [loading, setLoading] = useState(true)
 
-  // REPLACE THIS STRING WITH YOUR IMAGE URL
   const heroImageUrl = '/hero-banner.jpg'
 
   const fetchUserStats = useCallback(async () => {
@@ -32,7 +31,6 @@ function Home() {
         const library = games.filter((g) => g.status === 'Library')
         const completed = games.filter((g) => g.status === 'Completed')
 
-        // Collect all unique genres across all user games
         const allGenres = games.flatMap((g) => g.genres || [])
         const uniqueGenres = [...new Set(allGenres)]
 
@@ -57,7 +55,6 @@ function Home() {
 
   return (
     <div className="container py-4">
-      {/* Hero Section */}
       <div className="card bg-dark text-white border-secondary overflow-hidden mb-5">
         <div className="row g-0 align-items-center">
           <div className="col-lg-6 p-4 p-md-5">
@@ -100,7 +97,6 @@ function Home() {
                 width: '100%'
               }}
               onError={(e) => {
-                // Fallback style frame if the image URL fails to load
                 e.target.src = 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1200&q=80'
               }}
             />
@@ -108,7 +104,7 @@ function Home() {
         </div>
       </div>
 
-      {/* Gaming Overview & Statistics Header */}
+
       <div className="border-bottom border-secondary pb-2 mb-4">
         <h2 className="text-white font-audiowide">Your Cave Overview</h2>
       </div>
@@ -121,7 +117,7 @@ function Home() {
         </div>
       ) : (
         <>
-          {/* Stat Cards */}
+
           <div className="row g-4 mb-5">
             <div className="col-12 col-sm-6 col-lg-3">
               <div className="card bg-dark text-white border-secondary h-100 text-center p-3">
@@ -164,7 +160,6 @@ function Home() {
             </div>
           </div>
 
-          {/* Genres Badges Section */}
           {stats.uniqueGenresList.length > 0 && (
             <div className="card bg-dark text-white border-secondary p-4 mb-4">
               <h5 className="card-title text-warning mb-3">Your Played Genres</h5>
