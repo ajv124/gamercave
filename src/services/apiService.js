@@ -13,7 +13,6 @@ export const deleteUserAPI = async (id) => {
   return await axiosService("DELETE", `/users/${id}`);
 };
 
-// Game APIs
 export const getUserGamesAPI = async (userId) => {
   return await axiosService("GET", `/games?userId=${userId}`);
 };

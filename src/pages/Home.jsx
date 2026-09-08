@@ -12,26 +12,22 @@ function Home() {
     topGenresCount: 0,
     uniqueGenresList: []
   })
-  const [loading, setLoading] = useState(true)
 
-  const heroImageUrl = '/hero-banner.jpg'
+  const heroImageUrl = 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1200&q=80'
 
   const fetchUserStats = useCallback(async () => {
-    if (!user?.id) {
-      setLoading(false)
-      return
-    }
+    if (!user?.id) return
 
     try {
       const response = await getUserGamesAPI(user.id)
       if (response.status === 200) {
         const games = response.data || []
 
-        const wishlist = games.filter((g) => g.status === 'Wishlist')
-        const library = games.filter((g) => g.status === 'Library')
-        const completed = games.filter((g) => g.status === 'Completed')
+        const wishlist = games.filter((game) => game.status === 'Wishlist')
+        const library = games.filter((game) => game.status === 'Library')
+        const completed = games.filter((game) => game.status === 'Completed')
 
-        const allGenres = games.flatMap((g) => g.genres || [])
+        const allGenres = games.flatMap((game) => game.genres || [])
         const uniqueGenres = [...new Set(allGenres)]
 
         setStats({
@@ -44,8 +40,6 @@ function Home() {
       }
     } catch (err) {
       console.error('Failed to load home stats:', err)
-    } finally {
-      setLoading(false)
     }
   }, [user?.id])
 
@@ -96,83 +90,68 @@ function Home() {
                 objectFit: 'cover',
                 width: '100%'
               }}
-              onError={(e) => {
-                e.target.src = 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1200&q=80'
-              }}
             />
           </div>
         </div>
       </div>
 
-
       <div className="border-bottom border-secondary pb-2 mb-4">
         <h2 className="text-white font-audiowide">Your Cave Overview</h2>
       </div>
 
-      {loading ? (
-        <div className="text-center text-white my-5">
-          <div className="spinner-border" role="status">
-            <span className="visually-hidden">Loading statistics...</span>
+      <div className="row g-4 mb-5">
+        <div className="col-12 col-sm-6 col-lg-3">
+          <div className="card bg-dark text-white border-secondary h-100 text-center p-3">
+            <div className="card-body">
+              <h6 className="card-subtitle mb-2 text-muted uppercase">Wishlist</h6>
+              <h1 className="display-3 fw-bold text-warning">{stats.wishlistCount}</h1>
+              <p className="card-text text-secondary small">Games waiting to be played</p>
+            </div>
           </div>
         </div>
-      ) : (
-        <>
 
-          <div className="row g-4 mb-5">
-            <div className="col-12 col-sm-6 col-lg-3">
-              <div className="card bg-dark text-white border-secondary h-100 text-center p-3">
-                <div className="card-body">
-                  <h6 className="card-subtitle mb-2 text-muted uppercase">Wishlist</h6>
-                  <h1 className="display-3 fw-bold text-warning">{stats.wishlistCount}</h1>
-                  <p className="card-text text-secondary small">Games waiting to be played</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-12 col-sm-6 col-lg-3">
-              <div className="card bg-dark text-white border-secondary h-100 text-center p-3">
-                <div className="card-body">
-                  <h6 className="card-subtitle mb-2 text-muted">In Library</h6>
-                  <h1 className="display-3 fw-bold text-info">{stats.libraryCount}</h1>
-                  <p className="card-text text-secondary small">Currently in your backlog/playing</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-12 col-sm-6 col-lg-3">
-              <div className="card bg-dark text-white border-secondary h-100 text-center p-3">
-                <div className="card-body">
-                  <h6 className="card-subtitle mb-2 text-muted">Completed</h6>
-                  <h1 className="display-3 fw-bold text-success">{stats.completedCount}</h1>
-                  <p className="card-text text-secondary small">Games finished & beaten</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-12 col-sm-6 col-lg-3">
-              <div className="card bg-dark text-white border-secondary h-100 text-center p-3">
-                <div className="card-body">
-                  <h6 className="card-subtitle mb-2 text-muted">Genres Explored</h6>
-                  <h1 className="display-3 fw-bold text-danger">{stats.topGenresCount}</h1>
-                  <p className="card-text text-secondary small">Unique categories</p>
-                </div>
-              </div>
+        <div className="col-12 col-sm-6 col-lg-3">
+          <div className="card bg-dark text-white border-secondary h-100 text-center p-3">
+            <div className="card-body">
+              <h6 className="card-subtitle mb-2 text-muted">In Library</h6>
+              <h1 className="display-3 fw-bold text-info">{stats.libraryCount}</h1>
+              <p className="card-text text-secondary small">Currently in your backlog/playing</p>
             </div>
           </div>
+        </div>
 
-          {stats.uniqueGenresList.length > 0 && (
-            <div className="card bg-dark text-white border-secondary p-4 mb-4">
-              <h5 className="card-title text-warning mb-3">Your Played Genres</h5>
-              <div className="d-flex flex-wrap gap-2">
-                {stats.uniqueGenresList.map((genre) => (
-                  <span key={genre} className="badge bg-secondary fs-6 px-3 py-2">
-                    {genre}
-                  </span>
-                ))}
-              </div>
+        <div className="col-12 col-sm-6 col-lg-3">
+          <div className="card bg-dark text-white border-secondary h-100 text-center p-3">
+            <div className="card-body">
+              <h6 className="card-subtitle mb-2 text-muted">Completed</h6>
+              <h1 className="display-3 fw-bold text-success">{stats.completedCount}</h1>
+              <p className="card-text text-secondary small">Games finished & beaten</p>
             </div>
-          )}
-        </>
+          </div>
+        </div>
+
+        <div className="col-12 col-sm-6 col-lg-3">
+          <div className="card bg-dark text-white border-secondary h-100 text-center p-3">
+            <div className="card-body">
+              <h6 className="card-subtitle mb-2 text-muted">Genres Explored</h6>
+              <h1 className="display-3 fw-bold text-danger">{stats.topGenresCount}</h1>
+              <p className="card-text text-secondary small">Unique categories</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {stats.uniqueGenresList.length > 0 && (
+        <div className="card bg-dark text-white border-secondary p-4 mb-4">
+          <h5 className="card-title text-warning mb-3">Your Played Genres</h5>
+          <div className="d-flex flex-wrap gap-2">
+            {stats.uniqueGenresList.map((genre) => (
+              <span key={genre} className="badge bg-secondary fs-6 px-3 py-2">
+                {genre}
+              </span>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   )

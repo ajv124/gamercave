@@ -5,28 +5,21 @@ function SearchBar({ games, setFilteredGames }) {
   const [selectedGenre, setSelectedGenre] = useState('')
   const [selectedRating, setSelectedRating] = useState('')
 
-  // Dynamically derive available genres from current games dataset
   const genres = [...new Set(games.flatMap((game) => game.genres || []))]
 
   useEffect(() => {
     let result = games || []
 
     if (search.trim() !== '') {
-      result = result.filter((item) =>
-        item.gameTitle?.toLowerCase().includes(search.toLowerCase())
-      )
+      result = result.filter((item) =>item.gameTitle?.toLowerCase().includes(search.toLowerCase()))
     }
 
     if (selectedGenre !== '') {
-      result = result.filter((item) =>
-        item.genres?.includes(selectedGenre)
-      )
+      result = result.filter((item) =>item.genres?.includes(selectedGenre))
     }
 
     if (selectedRating !== '') {
-      result = result.filter((item) =>
-        Number(item.rating) >= Number(selectedRating)
-      )
+      result = result.filter((item) =>Number(item.rating) >= Number(selectedRating))
     }
 
     setFilteredGames(result)
@@ -40,7 +33,6 @@ function SearchBar({ games, setFilteredGames }) {
 
   return (
     <div className="d-flex flex-column align-items-center w-100 my-4 px-3">
-      {/* Search Bar Input */}
       <div className="w-100 d-flex justify-content-center mb-3">
         <input
           style={{ maxWidth: '500px' }}
@@ -52,7 +44,6 @@ function SearchBar({ games, setFilteredGames }) {
         />
       </div>
 
-      {/* Filter Dropdowns Controls */}
       <div
         className="d-flex gap-2 justify-content-center flex-wrap"
         style={{ maxWidth: '500px', width: '100%' }}

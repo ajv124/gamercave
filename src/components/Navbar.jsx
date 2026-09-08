@@ -15,13 +15,7 @@ import { MdMenu } from 'react-icons/md'
 import { FaUser } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import { useAuth } from './AuthProt'
-import {
-  deleteUserAPI,
-  deleteGameAPI,
-  getUserGamesAPI,
-  deleteMemoryAPI,
-  getUserMemoriesAPI
-} from '../services/apiService'
+import { deleteUserAPI, deleteGameAPI, getUserGamesAPI, deleteMemoryAPI, getUserMemoriesAPI } from '../services/apiService'
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = useState(null)
@@ -45,49 +39,14 @@ function Navbar() {
     try {
       const gamesResponse = await getUserGamesAPI(userId)
       const games = gamesResponse?.data ?? []
-
-      // --- DIAGNOSTIC: log exactly what the "user's games" endpoint returned ---
-      console.log('[handleDeleteUser] userId being deleted:', userId, typeof userId)
-      console.log('[handleDeleteUser] games returned by getUserGamesAPI:', games)
-      console.log(
-        '[handleDeleteUser] game.userId values in that response:',
-        games.map((g) => [g.id, g.userId, typeof g.userId])
-      )
-
-      // --- SAFETY GUARD: only delete games that actually belong to this user ---
-      // If getUserGamesAPI's server-side filter is broken/absent, this client-side
-      // filter stops the cascade from deleting every game in the database.
-      const ownGames = games.filter((g) => String(g.userId) === String(userId))
-
-      if (ownGames.length !== games.length) {
-        console.warn(
-          `[handleDeleteUser] getUserGamesAPI returned ${games.length} games but only ` +
-          `${ownGames.length} belong to userId ${userId}. The /games?userId= filter on ` +
-          `your backend is not working — this is very likely why unrelated games were ` +
-          `getting deleted. Filtered client-side to be safe.`
-        )
-      }
-
-      if (ownGames.length > 0) {
-        await Promise.all(ownGames.map((game) => deleteGameAPI(game.id)))
+      if (games.length > 0) {
+        await Promise.all(games.map((game) => deleteGameAPI(game.id)))
       }
 
       const memResponse = await getUserMemoriesAPI(userId)
       const memories = memResponse?.data ?? []
-
-      console.log('[handleDeleteUser] memories returned by getUserMemoriesAPI:', memories)
-
-      const ownMemories = memories.filter((m) => String(m.userId) === String(userId))
-
-      if (ownMemories.length !== memories.length) {
-        console.warn(
-          `[handleDeleteUser] getUserMemoriesAPI returned ${memories.length} memories but ` +
-          `only ${ownMemories.length} belong to userId ${userId}. Filtered client-side.`
-        )
-      }
-
-      if (ownMemories.length > 0) {
-        await Promise.all(ownMemories.map((mem) => deleteMemoryAPI(mem.id)))
+      if (memories.length > 0) {
+        await Promise.all(memories.map((mem) => deleteMemoryAPI(mem.id)))
       }
 
       const userResponse = await deleteUserAPI(userId)
@@ -96,7 +55,6 @@ function Navbar() {
         toast.info('User account and data deleted successfully!')
       }
     } catch (err) {
-      console.error('[handleDeleteUser] failed:', err)
       toast.error('Failed to delete user account!')
     }
   }
